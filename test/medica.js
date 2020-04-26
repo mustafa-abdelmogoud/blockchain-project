@@ -29,12 +29,25 @@ contract("Medica", function(accounts) {
       from: accounts[0]
     });
 
-    await medicaInstance.addDescription("123456789012", "Sick", {
-      from: accounts[0]
-    });
+    await medicaInstance.addDescription(
+      "123456789012",
+      "Moustafa Mahmoud",
+      "description one",
+      "Dubai Public Hospital",
+      "",
+      ["symptom1"],
+      ["treatment1"],
+      {
+        from: accounts[0]
+      }
+    );
 
     const patient = await medicaInstance.getPatient("123456789012");
 
-    assert.equal("Sick", patient.descriptions[0], "patient not added");
+    assert.equal(
+      "Dubai Public Hospital",
+      patient.diagnosis[0].hospital,
+      "patient not added"
+    );
   });
 });

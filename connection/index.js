@@ -37,7 +37,15 @@ module.exports = {
         return "ERROR 404";
       });
   },
-  addDescription: function(id, description) {
+  addDescription: function(
+    id,
+    doctor,
+    description,
+    hospital,
+    diagnose,
+    symptoms,
+    treatments
+  ) {
     Medica.setProvider(web3.currentProvider);
 
     var medicaInstance;
@@ -45,9 +53,19 @@ module.exports = {
       .then(async function(instance) {
         medicaInstance = instance;
         const account = await getAccount();
-        return medicaInstance.addDescription(id, description, {
-          from: account
-        });
+
+        return medicaInstance.addDescription(
+          id,
+          doctor,
+          description,
+          hospital,
+          diagnose,
+          symptoms,
+          treatments,
+          {
+            from: account
+          }
+        );
       })
       .catch(function(e) {
         console.log(e);

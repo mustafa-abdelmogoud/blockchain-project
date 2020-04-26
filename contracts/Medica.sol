@@ -2,10 +2,18 @@ pragma experimental ABIEncoderV2;
 
 
 contract Medica {
+    struct Visit {
+        string doctor;
+        string description;
+        string hospital;
+        string diagnose;
+        string[] symptoms;
+        string[] treatments;
+    }
     struct Patient {
         string id;
         string name;
-        string[] descriptions;
+        Visit[] diagnosis;
     }
 
     mapping(string => Patient) public patients;
@@ -14,7 +22,8 @@ contract Medica {
         public
         returns (bool success)
     {
-        patients[_id] = Patient(_id, _name, new string[](0));
+        patients[_id].id = _id;
+        patients[_id].name = _name;
         return true;
     }
 
@@ -26,11 +35,25 @@ contract Medica {
         return patients[_id];
     }
 
-    function addDescription(string memory _id, string memory _description)
-        public
-        returns (bool success)
-    {
-        patients[_id].descriptions.push(_description);
+    function addDescription(
+        string memory _id,
+        string memory _doctor,
+        string memory _description,
+        string memory _hospital,
+        string memory _diagnose,
+        string[] memory _symptoms,
+        string[] memory _treatments
+    ) public returns (bool success) {
+        patients[_id].diagnosis.push(
+            Visit(
+                _doctor,
+                _description,
+                _hospital,
+                _diagnose,
+                _symptoms,
+                _treatments
+            )
+        );
         return true;
     }
 }

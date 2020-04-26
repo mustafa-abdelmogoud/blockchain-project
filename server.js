@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
-const port = 3000 || process.env.PORT;
+const cors = require("cors");
+const port = 4000 || process.env.PORT;
 const truffle_connect = require("./connection");
 const bodyParser = require("body-parser");
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.post("/profile", async (req, res) => {
@@ -19,20 +21,56 @@ app.get("/search", async (req, res) => {
 
   const patient = await truffle_connect.getPatient(id);
 
+  const diagnosis = patient.diagnosis.map(
+    ({ doctor, description, hospital, diagnose, symptoms, treatments }) => ({
+      doctor,
+      description,
+      hospital,
+      diagnose,
+      symptoms,
+      treatments
+    })
+  );
+
   res.json({
     code: 200,
     id: patient.id,
     name: patient.name,
-    descriptions: patient.descriptions
+    diagnosis: diagnosis
   });
 });
 
 app.post("/description", async (req, res) => {
-  const { id, description } = req.body;
+  const {
+    id,
+    doctor,
+    description,
+    hospital,
+    diagnose,
+    symptoms,
+    treatments
+  } = req.body;
 
-  await truffle_connect.addDescription(id, description);
+  await truffle_connect.addDescription(
+    id,
+    doctor,
+    description,
+    hospital,
+    diagnose,
+    symptoms,
+    treatments
+  );
 
-  res.json({ code: 200, id, description });
+  res.json({
+    code: 200,
+    id,
+    doctor,
+    description,
+    hospital,
+    diagnose,
+    symptoms,
+    treatments
+  });
 });
 
 app.listen(port, () => {
